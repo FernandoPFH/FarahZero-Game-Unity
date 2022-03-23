@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ControleCarro : MonoBehaviour
 {
-    public float VelociadadeDeMovimento;
-    public float VelociadadeDeGiro;
+    public float VelociadadeDeMovimento = 450000f;
+    public float VelociadadeDeGiro = 40000f;
+    
     
     private Rigidbody _rigidbody;
 
     private float _moverParaFrente;
     private float _girar;
-
+    
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -32,9 +33,18 @@ public class ControleCarro : MonoBehaviour
 
     void FixedUpdate()
     {
+        Movimentacao();
+    }
+
+    void Movimentacao()
+    {
+        // Acerela E Freia A Nave
         _rigidbody.AddRelativeForce(Vector3.forward * _moverParaFrente * VelociadadeDeMovimento);
+        
+        // Gira A Nave
         _rigidbody.AddTorque(Vector3.up * _girar * VelociadadeDeGiro);
 
+        // Tira O Efeito De Deslizar Quando Vira
         Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
         velocidadeLocal.x = 0;
         _rigidbody.velocity = transform.TransformDirection(velocidadeLocal);
