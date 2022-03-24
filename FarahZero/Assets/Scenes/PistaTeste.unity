@@ -155,6 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ForcaDeMovimento: 140
   ForcadeDeRotacao: 15
+  ValorDeRotacao: 10
   LayerMaskChao:
     serializedVersion: 2
     m_Bits: 64

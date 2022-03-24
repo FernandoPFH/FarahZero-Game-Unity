@@ -8,9 +8,12 @@ public class ControleCarro : MonoBehaviour
     public float ForcaDeMovimento;
     public float ForcadeDeRotacao;
 
+    public float ValorDeRotacao;
+
     public LayerMask LayerMaskChao;
     
     private Rigidbody _rigidbody;
+    private Transform _visual;
 
     private float _moverParaFrente;
     private float _girar;
@@ -18,6 +21,7 @@ public class ControleCarro : MonoBehaviour
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _visual = transform.Find("Visual");
     }
     
     // Start is called before the first frame update
@@ -32,6 +36,9 @@ public class ControleCarro : MonoBehaviour
         // Pega Input Do Teclado
         _moverParaFrente = Input.GetAxis("Vertical");
         _girar = Input.GetAxis("Horizontal");
+        
+        _visual.rotation = Quaternion.Euler(new Vector3(_visual.rotation.eulerAngles.x,_visual.rotation.eulerAngles.y,-_girar * ValorDeRotacao));
+        //_visual.Rotate(transform.forward,-_girar * ValorDeRotacao * Time.deltaTime);
     }
 
     void FixedUpdate()
@@ -48,7 +55,7 @@ public class ControleCarro : MonoBehaviour
             _rigidbody.MoveRotation(Quaternion.Slerp(_rigidbody.rotation,Quaternion.FromToRotation(transform.up,hitInfo.normal) * _rigidbody.rotation,0.8f));
 
             // Mantem A Nave Há Uma Distancia Continua Do Chão
-            if (Math.Abs(hitInfo.distance - 2f) > 0.1f)
+            if (hitInfo.distance != 2f)
                 _rigidbody.MovePosition(hitInfo.point + hitInfo.normal * 2f);
         
             // Acelera A Nave Baseado Na Rotação Da Nave
