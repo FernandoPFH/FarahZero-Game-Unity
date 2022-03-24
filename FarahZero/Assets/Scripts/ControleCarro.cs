@@ -1,12 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ControleCarro : MonoBehaviour
 {
-    public float VelociadadeDeMovimento = 450000f;
-    public float VelociadadeDeGiro = 40000f;
-    
+    public float ForcaDeMovimento;
+    public float ForcadeDeRotacao;
+
+    public LayerMask LayerMaskChao;
     
     private Rigidbody _rigidbody;
 
@@ -27,6 +29,7 @@ public class ControleCarro : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Pega Input Do Teclado
         _moverParaFrente = Input.GetAxis("Vertical");
         _girar = Input.GetAxis("Horizontal");
     }
@@ -38,78 +41,34 @@ public class ControleCarro : MonoBehaviour
 
     void Movimentacao()
     {
-        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hitInfo, 10f))
+        // Checar Chão
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hitInfo, 3f,LayerMaskChao))
         {
-            if (hitInfo.distance != 1f)
-            {
-                transform.position = Vector3.Lerp(transform.position,hitInfo.point + hitInfo.normal * 3f, .8f) ;
-            }
+            // Rotaciona A Nave Baseado Na Angulação Do Chão
+            _rigidbody.MoveRotation(Quaternion.Slerp(_rigidbody.rotation,Quaternion.FromToRotation(transform.up,hitInfo.normal) * _rigidbody.rotation,0.8f));
 
-            Vector3 interpolatedNormal = BarycentricCoordinateInterpolator.GetInterpolatedNormal(hitInfo);
-
-            _rigidbody.MoveRotation(Quaternion.FromToRotation(transform.up, interpolatedNormal) * _rigidbody.rotation);
+            // Mantem A Nave Há Uma Distancia Continua Do Chão
+            if (Math.Abs(hitInfo.distance - 2f) > 0.1f)
+                _rigidbody.MovePosition(hitInfo.point + hitInfo.normal * 2f);
+        
+            // Acelera A Nave Baseado Na Rotação Da Nave
+            _rigidbody.AddForce(transform.forward * _moverParaFrente * ForcaDeMovimento);
         }
-
+        else
+        {
+            // Adiciona Gravidade Se Não Tiver Chão
+            _rigidbody.AddForce(Vector3.down * 30f);
         
-        //if (Physics.Raycast(transform.position,-transform.up,6f))
-            // Acerela E Freia A Nave
-            _rigidbody.AddRelativeForce(Vector3.forward * _moverParaFrente * VelociadadeDeMovimento);
+            // Acelera A Nave Para Frente
+            _rigidbody.AddForce(Vector3.forward * _moverParaFrente * ForcaDeMovimento);
+        }
         
-        // Gira A Nave
-        _rigidbody.AddTorque(Vector3.up * _girar * VelociadadeDeGiro);
-
-        // Tira O Efeito De Deslizar Quando Vira
+        // Rotaciona A Nave
+        _rigidbody.AddTorque(Vector3.up * _girar * ForcadeDeRotacao);
+        
+        // Elimina Velocidade Lateral
         Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
         velocidadeLocal.x = 0;
         _rigidbody.velocity = transform.TransformDirection(velocidadeLocal);
-    }
-}
-
-
-// Esse Código Não É Meu
-public static class BarycentricCoordinateInterpolator
-{
-    public static Vector3 GetInterpolatedNormal(RaycastHit hit)
-    {
-        MeshCollider meshCollider = hit.collider as MeshCollider;
- 
-        if (!meshCollider || !meshCollider.sharedMesh)
-        {
-            Debug.LogWarning("No MeshCollider attached to to the mesh!", hit.collider);
-            return Vector3.up;
-        }
- 
-        Mesh mesh = meshCollider.sharedMesh;
-        Vector3 normal = CalculateInterpolatedNormal(mesh, hit);
-     
-        return normal;
-    }
- 
-    private static Vector3 CalculateInterpolatedNormal(Mesh mesh, RaycastHit hit)
-    {
-        Vector3[] normals = mesh.normals;
-        int[] triangles = mesh.triangles;
- 
-        // Extract local space normals of the triangle we hit
-        Vector3 n0 = normals[triangles[hit.triangleIndex * 3 + 0]];
-        Vector3 n1 = normals[triangles[hit.triangleIndex * 3 + 1]];
-        Vector3 n2 = normals[triangles[hit.triangleIndex * 3 + 2]];
- 
-        // interpolate using the barycentric coordinate of the hitpoint
-        Vector3 baryCenter = hit.barycentricCoordinate;
- 
-        // Use barycentric coordinate to interpolate normal
-        Vector3 interpolatedNormal = n0 * baryCenter.x + n1 * baryCenter.y + n2 * baryCenter.z;
-        // normalize the interpolated normal
-        interpolatedNormal = interpolatedNormal.normalized;
- 
-        // Transform local space normals to world space
-        Transform hitTransform = hit.collider.transform;
-        interpolatedNormal = hitTransform.TransformDirection(interpolatedNormal);
- 
-        // Display with Debug.DrawLine
-        Debug.DrawRay(hit.point, interpolatedNormal);
- 
-        return interpolatedNormal;
     }
 }
