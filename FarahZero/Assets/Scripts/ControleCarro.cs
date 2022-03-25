@@ -71,7 +71,7 @@ public class ControleCarro : MonoBehaviour
         }
         
         // Rotaciona A Nave
-        _rigidbody.AddTorque(Vector3.up * _girar * ForcadeDeRotacao);
+        _rigidbody.AddTorque(Vector3.up * _girar * ForcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
         
         // Elimina Velocidade Lateral
         Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
