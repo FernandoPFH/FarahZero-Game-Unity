@@ -6,8 +6,8 @@ using TMPro;
 
 public class CheckPointGerenciador : MonoBehaviour
 {
-    public TextMeshProUGUI volta;
-    public TextMeshProUGUI cp;
+    private TextMeshProUGUI _contadorDeVolta;
+    private TextMeshProUGUI _contadorDeCheckPoint;
     
     private int _idCheckPointAtual = 0;
     private int _voltaAtual = 1;
@@ -15,8 +15,14 @@ public class CheckPointGerenciador : MonoBehaviour
     private void Update()
     {
         // Atualiza O UI
-        volta.text = _voltaAtual.ToString();
-        cp.text = _idCheckPointAtual.ToString();
+        _contadorDeVolta.text = _voltaAtual.ToString();
+        _contadorDeCheckPoint.text = _idCheckPointAtual.ToString();
+    }
+
+    public void Init(TextMeshProUGUI contadorDeVolta, TextMeshProUGUI contadorDeCheckPoint)
+    {
+        this._contadorDeVolta = contadorDeVolta;
+        this._contadorDeCheckPoint = contadorDeCheckPoint;
     }
 
     private void OnTriggerEnter(Collider other)

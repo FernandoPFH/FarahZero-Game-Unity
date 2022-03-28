@@ -5,63 +5,91 @@ using UnityEngine;
 
 public class ControleCarro : MonoBehaviour
 {
-    public float ForcaDeMovimento;
-    public float ForcadeDeRotacao;
+    public bool Habilitado = false;
+    
+    [SerializeField]
+    private float _forcaDeMovimento;
+    [SerializeField]
+    private float _forcadeDeRotacao;
 
-    public float ValorDeRotacao;
+    [SerializeField]
+    private float _valorDeRotacaoDoVisual;
 
-    public LayerMask LayerMaskChao;
+    [SerializeField]
+    private LayerMask _layerMaskChao;
     
     private Rigidbody _rigidbody;
     private Transform _visual;
-
+    private Animator _animator;
+    
     private float _moverParaFrente;
     private float _girar;
-    
+
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _visual = transform.Find("Visual");
+        _animator = GetComponent<Animator>();
     }
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        _animator.SetTrigger("Ligar");
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Pega Input Do Teclado
-        _moverParaFrente = Input.GetAxis("Vertical");
-        _girar = Input.GetAxis("Horizontal");
+        if (Habilitado)
+        {
+            // Pega Input Do Teclado
+            _moverParaFrente = Input.GetAxis("Vertical");
+            _girar = Input.GetAxis("Horizontal");
         
-        //_visual.rotation = Quaternion.Euler(new Vector3(_visual.rotation.eulerAngles.x,_visual.rotation.eulerAngles.y,-_girar * ValorDeRotacao));
+            // Rotaciona O Visual Da Nave
+            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x,_visual.localRotation.eulerAngles.y,-_girar * _valorDeRotacaoDoVisual));
+        }
     }
 
     void FixedUpdate()
     {
-        Movimentacao();
+        var estaProximoDoChao = ControleDeGravidade();
+        
+        if (Habilitado)
+        {
+            Movimentacao(estaProximoDoChao);
+        }
     }
 
-    void Movimentacao()
+    // Controla A Gravidade E Checa Se Está Próximo Do Chão
+    bool ControleDeGravidade()
     {
         // Checar Chão
-        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hitInfo, 3f,LayerMaskChao))
+        if (Physics.Raycast(transform.position, -transform.up, out RaycastHit hitInfo, 3f, _layerMaskChao))
         {
             Vector3 interpolatedNormal = BarycentricCoordinateInterpolator.GetInterpolatedNormal(hitInfo);
  
-            _rigidbody.MoveRotation(Quaternion.FromToRotation(transform.up, interpolatedNormal) * _rigidbody.rotation);
             // Rotaciona A Nave Baseado Na Angulação Do Chão
-            //_rigidbody.MoveRotation(Quaternion.Slerp(_rigidbody.rotation,Quaternion.FromToRotation(transform.up,hitInfo.normal) * _rigidbody.rotation,0.8f));
+            _rigidbody.MoveRotation(Quaternion.FromToRotation(transform.up, interpolatedNormal) * _rigidbody.rotation);
 
             // Mantem A Nave Há Uma Distancia Continua Do Chão
             if (hitInfo.distance != 2f)
                 _rigidbody.MovePosition(hitInfo.point + hitInfo.normal * 2f);
-        
+
+            return true;
+        }
+
+        return false;
+    }
+
+    void Movimentacao(bool estaProximoDoChao)
+    {
+        // Checar Chão
+        if (estaProximoDoChao)
+        {
             // Acelera A Nave Baseado Na Rotação Da Nave
-            _rigidbody.AddForce(transform.forward * _moverParaFrente * ForcaDeMovimento);
+            _rigidbody.AddForce(transform.forward * _moverParaFrente * _forcaDeMovimento);
         }
         else
         {
@@ -69,11 +97,11 @@ public class ControleCarro : MonoBehaviour
             _rigidbody.AddForce(Vector3.down * 30f);
         
             // Acelera A Nave Para Frente
-            _rigidbody.AddForce(Vector3.forward * _moverParaFrente * ForcaDeMovimento);
+            _rigidbody.AddForce(Vector3.forward * _moverParaFrente * _forcaDeMovimento);
         }
         
         // Rotaciona A Nave
-        _rigidbody.AddTorque(Vector3.up * _girar * ForcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
+        _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
         
         // Elimina Velocidade Lateral
         Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
