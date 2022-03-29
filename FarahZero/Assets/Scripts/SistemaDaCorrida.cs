@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class SistemaDaCorrida : MonoBehaviour
 {
+    static public SistemaDaCorrida Instancia;
+    
     public int NumeroDeCorredores = 4;
+    public int NumeroDeVoltas = 3;
 
     [SerializeField]
     private TextMeshProUGUI _contadorDeVolta;
@@ -19,6 +22,8 @@ public class SistemaDaCorrida : MonoBehaviour
 
     void Awake()
     {
+        Instancia = this;
+        
         _colisor = GetComponent<BoxCollider>();
     }
     
@@ -79,5 +84,33 @@ public class SistemaDaCorrida : MonoBehaviour
 
         // Retorna As Posicões Inicias Dos Corredores
         return posicoesDosCorredores;
+    }
+
+    public void HabilitarCorredores()
+    {
+        foreach (GameObject corredor in _corredores)
+        {
+            corredor.GetComponent<ControleCarro>().Habilitado = true;
+        }
+    }
+
+    public void DesabilitarCorredores()
+    {
+        foreach (GameObject corredor in _corredores)
+        {
+            corredor.GetComponent<ControleCarro>().Habilitado = false;
+        }
+    }
+
+    public void CorridaAcabou(CheckPointGerenciador instanciaDoCorredor,int numeroDeVoltas)
+    {
+        if (instanciaDoCorredor.transform.TryGetComponent<ControleCarro>(out ControleCarro controleCarro))
+        {
+            if (numeroDeVoltas > NumeroDeVoltas)
+            {
+                DesabilitarCorredores();
+                FuncoesUI.Intancia.HabilitarTelaFinalDaCorrida();
+            }
+        }
     }
 }

@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81f34d5fd7fad3e41a1ea7901ccae2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Habilitado: 1
+  Habilitado: 0
   _forcaDeMovimento: 140
   _forcadeDeRotacao: 15
   _valorDeRotacaoDoVisual: 10

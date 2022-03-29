@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ControleCarro : MonoBehaviour
 {
+    [HideInInspector]
     public bool Habilitado = false;
     
     [SerializeField]

@@ -37,6 +37,8 @@ public class CheckPointGerenciador : MonoBehaviour
                 {
                     _idCheckPointAtual = 0;
                     _voltaAtual++;
+                    SistemaDaCorrida.Instancia.CorridaAcabou(this, _voltaAtual);
+
                 }
                 // Se Não, Passa O Check Point 
                 else
