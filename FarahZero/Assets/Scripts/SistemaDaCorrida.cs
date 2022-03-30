@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SistemaDaCorrida : MonoBehaviour
 {
@@ -16,8 +17,9 @@ public class SistemaDaCorrida : MonoBehaviour
 
     [SerializeField]
     private TextMeshProUGUI _contadorDeVolta;
+
     [SerializeField]
-    private TextMeshProUGUI _contadorDeCp;
+    private TextMeshProUGUI _contadorDeTempo;
 
     public GameObject NaveJogador;
 
@@ -55,7 +57,7 @@ public class SistemaDaCorrida : MonoBehaviour
         var jogador = Instantiate(NaveJogador, posicaoInicialCorredores[0], Quaternion.identity);
 
         // Passa As Informações Do UI
-        jogador.GetComponent<CheckPointGerenciador>().Init(_contadorDeVolta,_contadorDeCp);
+        jogador.GetComponent<CheckPointGerenciador>().Init(_contadorDeVolta,_contadorDeTempo);
         jogador.transform.Find("Visual").GetComponent<MeshFilter>().mesh = naves[PlayerPrefs.GetInt("NaveEscolhida", 0)];
         jogador.transform.Find("Visual").GetComponent<MeshCollider>().sharedMesh = naves[PlayerPrefs.GetInt("NaveEscolhida", 0)];
 
@@ -122,14 +124,18 @@ public class SistemaDaCorrida : MonoBehaviour
         }
     }
 
-    public void CorridaAcabou(CheckPointGerenciador instanciaDoCorredor,int numeroDeVoltas)
+    public void CorridaAcabou(CheckPointGerenciador instanciaDoCorredor,int numeroDeVoltas,float tempoTotalDaCorrida)
     {
         if (instanciaDoCorredor.transform.TryGetComponent<ControleCarro>(out ControleCarro controleCarro))
         {
             if (numeroDeVoltas > NumeroDeVoltas)
             {
                 DesabilitarCorredores();
-                FuncoesUI.Intancia.HabilitarTelaFinalDaCorrida();
+
+                if (PlayerPrefs.GetFloat("MenorTempo_"+SceneManager.GetActiveScene().name, Mathf.Infinity) > tempoTotalDaCorrida)
+                    PlayerPrefs.SetFloat("MenorTempo_" + SceneManager.GetActiveScene().name, tempoTotalDaCorrida);
+
+                FuncoesUI.Intancia.HabilitarTelaFinalDaCorrida(tempoTotalDaCorrida);
             }
         }
     }

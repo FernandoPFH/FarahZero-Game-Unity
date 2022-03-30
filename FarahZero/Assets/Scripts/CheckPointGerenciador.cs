@@ -7,22 +7,30 @@ using TMPro;
 public class CheckPointGerenciador : MonoBehaviour
 {
     private TextMeshProUGUI _contadorDeVolta;
-    private TextMeshProUGUI _contadorDeCheckPoint;
+    private TextMeshProUGUI _contadorDeTempo;
     
     private int _idCheckPointAtual = 0;
     private int _voltaAtual = 1;
+
+    private float _tempoDeComeco;
+    private List<float> _tempoDeCadaVolta = new List<float>();
 
     private void Update()
     {
         // Atualiza O UI
         _contadorDeVolta.text = _voltaAtual.ToString();
-        _contadorDeCheckPoint.text = _idCheckPointAtual.ToString();
+        _contadorDeTempo.text = CalcularSegundosParaHorasEMinutos(Time.time - _tempoDeComeco);
     }
 
-    public void Init(TextMeshProUGUI contadorDeVolta, TextMeshProUGUI contadorDeCheckPoint)
+    public void Init(TextMeshProUGUI contadorDeVolta,TextMeshProUGUI contadorDeTempo)
     {
-        this._contadorDeVolta = contadorDeVolta;
-        this._contadorDeCheckPoint = contadorDeCheckPoint;
+        _contadorDeVolta = contadorDeVolta;
+        _contadorDeTempo = contadorDeTempo;
+    }
+
+    private void Start()
+    {
+        _tempoDeComeco = Time.time;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,8 +45,13 @@ public class CheckPointGerenciador : MonoBehaviour
                 {
                     _idCheckPointAtual = 0;
                     _voltaAtual++;
-                    SistemaDaCorrida.Instancia.CorridaAcabou(this, _voltaAtual);
+                    
+                    _tempoDeCadaVolta.Add(Time.time - _tempoDeComeco);
 
+                    var tempoTotal = 0f;
+                    foreach (float tempoDeCadaVolta in _tempoDeCadaVolta)
+                        tempoTotal += tempoDeCadaVolta;
+                    SistemaDaCorrida.Instancia.CorridaAcabou(this, _voltaAtual,tempoTotal);
                 }
                 // Se Não, Passa O Check Point 
                 else
@@ -46,5 +59,27 @@ public class CheckPointGerenciador : MonoBehaviour
                     _idCheckPointAtual = checkPoint.id;
                 }
         }
+    }
+
+    String CalcularSegundosParaHorasEMinutos(float tempoAtual)
+    {
+        float segundos = tempoAtual % 60f;
+        float minutos = Mathf.Floor(tempoAtual / 60f);
+        float horas = Mathf.Floor(minutos / 60f);
+        minutos %= 60f;
+
+        String textoHoras = (Mathf.FloorToInt(horas) < 10
+            ? "0" + Mathf.FloorToInt(horas).ToString()
+            : Mathf.FloorToInt(horas).ToString());
+
+        String textoMinutos = (Mathf.FloorToInt(minutos) < 10
+            ? "0" + Mathf.FloorToInt(minutos).ToString()
+            : Mathf.FloorToInt(minutos).ToString());
+
+        String textoSegundos = (Mathf.FloorToInt(segundos) < 10
+            ? "0" + Mathf.FloorToInt(segundos).ToString()
+            : Mathf.FloorToInt(segundos).ToString());
+
+        return textoHoras + "'" + textoMinutos + "''" + textoSegundos;
     }
 }
