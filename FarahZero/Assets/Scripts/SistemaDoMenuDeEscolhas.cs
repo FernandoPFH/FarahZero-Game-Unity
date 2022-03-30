@@ -9,6 +9,7 @@ public class SistemaDoMenuDeEscolhas : MonoBehaviour
 {
     public List<String> mapas; 
     
+    private int _modoEscolhido = 0;
     private int _mapaEscolhido = 0;
     private int _naveEscolhida = 0;
     
@@ -24,12 +25,16 @@ public class SistemaDoMenuDeEscolhas : MonoBehaviour
         
     }
     
+    public void EscolherModo(int valorDoModo) {_modoEscolhido = valorDoModo;}
+    
     public void EscolherMapa(int valorDoMapa) {_mapaEscolhido = valorDoMapa;}
     
     public void EscolherNave(int valorDaNave) {_naveEscolhida = valorDaNave;}
 
     public void EntrarNaCorrida()
     {
+        PlayerPrefs.SetInt("ModoEscolhido",_modoEscolhido);
+        
         PlayerPrefs.SetInt("NaveEscolhida",_naveEscolhida);
         
         SceneManager.LoadScene(mapas[_mapaEscolhido]);

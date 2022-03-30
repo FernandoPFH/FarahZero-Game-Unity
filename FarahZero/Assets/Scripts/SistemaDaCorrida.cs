@@ -12,6 +12,8 @@ public class SistemaDaCorrida : MonoBehaviour
 
     public List<Mesh> naves;
 
+    private bool _eCorrida;
+
     [SerializeField]
     private TextMeshProUGUI _contadorDeVolta;
     [SerializeField]
@@ -32,6 +34,20 @@ public class SistemaDaCorrida : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _eCorrida = PlayerPrefs.GetInt("ModoEscolhido", 0) == 1;
+
+        if (_eCorrida)
+        {
+            NumeroDeVoltas = 3;
+            NumeroDeCorredores = 4;
+        }
+        else
+        {
+            NumeroDeVoltas = 1;
+            NumeroDeCorredores = 1;
+        }
+        
+        
         // Calcula Posição Inicial Dos Corredores
         var posicaoInicialCorredores = CalcularPosicoesDosCorredores();
 
