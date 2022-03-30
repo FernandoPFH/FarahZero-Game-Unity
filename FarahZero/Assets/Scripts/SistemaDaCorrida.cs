@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class SistemaDaCorrida : MonoBehaviour
 {
     static public SistemaDaCorrida Instancia;
+
+    [HideInInspector] public bool corredoresEstaoHabilitados = false;
     
     public int NumeroDeCorredores = 4;
     public int NumeroDeVoltas = 3;
@@ -110,6 +113,8 @@ public class SistemaDaCorrida : MonoBehaviour
 
     public void HabilitarCorredores()
     {
+        corredoresEstaoHabilitados = true;
+        
         foreach (GameObject corredor in _corredores)
         {
             corredor.GetComponent<ControleCarro>().Habilitado = true;
@@ -118,6 +123,8 @@ public class SistemaDaCorrida : MonoBehaviour
 
     public void DesabilitarCorredores()
     {
+        corredoresEstaoHabilitados = false;
+        
         foreach (GameObject corredor in _corredores)
         {
             corredor.GetComponent<ControleCarro>().Habilitado = false;

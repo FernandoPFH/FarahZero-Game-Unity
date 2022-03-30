@@ -12,11 +12,19 @@ public class CheckPointGerenciador : MonoBehaviour
     private int _idCheckPointAtual = 0;
     private int _voltaAtual = 1;
 
+    private bool estaHabilitado = false;
+
     private float _tempoDeComeco;
     private List<float> _tempoDeCadaVolta = new List<float>();
 
     private void Update()
     {
+        if (!estaHabilitado && SistemaDaCorrida.Instancia.corredoresEstaoHabilitados)
+        {
+            _tempoDeComeco = Time.time;
+            estaHabilitado = true;
+        }
+        
         // Atualiza O UI
         _contadorDeVolta.text = _voltaAtual.ToString();
         _contadorDeTempo.text = CalcularSegundosParaHorasEMinutos(Time.time - _tempoDeComeco);
