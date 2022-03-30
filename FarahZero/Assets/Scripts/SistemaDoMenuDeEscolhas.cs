@@ -1,11 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class SistemaDoMenuDeEscolhas : MonoBehaviour
 {
-    private int _mapaEscolhido = 99;
-    private int _naveEscolhida = 99;
+    public List<String> mapas; 
+    
+    private int _mapaEscolhido = 0;
+    private int _naveEscolhida = 0;
     
     // Start is called before the first frame update
     void Start()
@@ -22,4 +27,11 @@ public class SistemaDoMenuDeEscolhas : MonoBehaviour
     public void EscolherMapa(int valorDoMapa) {_mapaEscolhido = valorDoMapa;}
     
     public void EscolherNave(int valorDaNave) {_naveEscolhida = valorDaNave;}
+
+    public void EntrarNaCorrida()
+    {
+        PlayerPrefs.SetInt("NaveEscolhida",_naveEscolhida);
+        
+        SceneManager.LoadScene(mapas[_mapaEscolhido]);
+    }
 }

@@ -1894,6 +1894,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NumeroDeCorredores: 1
   NumeroDeVoltas: 1
+  naves:
+  - {fileID: 638523861631414334, guid: 7caaf0ba83e07254dbdff1638edd18d1, type: 3}
+  - {fileID: 8427236552508146419, guid: 4ebfda7f71102f0448881548a80d9a50, type: 3}
+  - {fileID: 8140238591767863974, guid: 2431b45c981a54345a8661e0b50c5e4e, type: 3}
   _contadorDeVolta: {fileID: 467599349}
   _contadorDeCp: {fileID: 45147345}
   NaveJogador: {fileID: 937576358372228601, guid: e797cfc8fba090a419aea4d2e5844ac2, type: 3}

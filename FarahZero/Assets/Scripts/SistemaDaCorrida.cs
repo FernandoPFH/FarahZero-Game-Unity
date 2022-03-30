@@ -10,6 +10,8 @@ public class SistemaDaCorrida : MonoBehaviour
     public int NumeroDeCorredores = 4;
     public int NumeroDeVoltas = 3;
 
+    public List<Mesh> naves;
+
     [SerializeField]
     private TextMeshProUGUI _contadorDeVolta;
     [SerializeField]
@@ -38,6 +40,8 @@ public class SistemaDaCorrida : MonoBehaviour
 
         // Passa As Informações Do UI
         jogador.GetComponent<CheckPointGerenciador>().Init(_contadorDeVolta,_contadorDeCp);
+        jogador.transform.Find("Visual").GetComponent<MeshFilter>().mesh = naves[PlayerPrefs.GetInt("NaveEscolhida", 0)];
+        jogador.transform.Find("Visual").GetComponent<MeshCollider>().sharedMesh = naves[PlayerPrefs.GetInt("NaveEscolhida", 0)];
 
         // Adiciona O Jogador A Lista De Corredores
         _corredores.Add(jogador);
