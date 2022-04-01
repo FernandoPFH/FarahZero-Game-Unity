@@ -401,7 +401,9 @@ MonoBehaviour:
   Habilitado: 0
   _forcaDeMovimento: 140
   _forcadeDeRotacao: 15
+  _forcadeDeRotacaoShift: 30
   _valorDeRotacaoDoVisual: 10
+  _valorDeRotacaoShiftDoVisual: 10
   _layerMaskChao:
     serializedVersion: 2
     m_Bits: 64

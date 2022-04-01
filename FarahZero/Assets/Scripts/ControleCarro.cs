@@ -12,9 +12,13 @@ public class ControleCarro : MonoBehaviour
     private float _forcaDeMovimento;
     [SerializeField]
     private float _forcadeDeRotacao;
+    [SerializeField]
+    private float _forcadeDeRotacaoShift;
 
     [SerializeField]
     private float _valorDeRotacaoDoVisual;
+    [SerializeField]
+    private float _valorDeRotacaoShiftDoVisual;
 
     [SerializeField]
     private LayerMask _layerMaskChao;
@@ -25,6 +29,7 @@ public class ControleCarro : MonoBehaviour
     
     private float _moverParaFrente;
     private float _girar;
+    private bool _shiftEstaSendoPrecionado;
 
     void Awake()
     {
@@ -47,9 +52,9 @@ public class ControleCarro : MonoBehaviour
             // Pega Input Do Teclado
             _moverParaFrente = Input.GetAxis("Vertical");
             _girar = Input.GetAxis("Horizontal");
-        
-            // Rotaciona O Visual Da Nave
-            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x,_visual.localRotation.eulerAngles.y,-_girar * _valorDeRotacaoDoVisual));
+            _shiftEstaSendoPrecionado = Input.GetKey(KeyCode.LeftShift);
+
+            ControleDoVisual();
         }
     }
 
@@ -60,6 +65,19 @@ public class ControleCarro : MonoBehaviour
         if (Habilitado)
         {
             Movimentacao(estaProximoDoChao);
+        }
+    }
+
+    void ControleDoVisual()
+    {
+        if (_shiftEstaSendoPrecionado)
+            // Rotaciona O Visual Da Nave
+            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x,_girar * _valorDeRotacaoShiftDoVisual,_visual.localRotation.eulerAngles.z));
+        else
+        {
+            _visual.localRotation = Quaternion.Euler(Vector3.zero);
+            // Rotaciona O Visual Da Nave
+            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x, _visual.localRotation.eulerAngles.y, -_girar * _valorDeRotacaoDoVisual));
         }
     }
 
@@ -100,14 +118,22 @@ public class ControleCarro : MonoBehaviour
             // Acelera A Nave Para Frente
             _rigidbody.AddForce(Vector3.forward * _moverParaFrente * _forcaDeMovimento);
         }
+
+        if (_shiftEstaSendoPrecionado)
+        {
+            // Rotaciona A Nave
+            _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacaoShift * (_moverParaFrente < 0f?-1f:1f));
+        }
+        else
+        {
+            // Rotaciona A Nave
+            _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
         
-        // Rotaciona A Nave
-        _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
-        
-        // Elimina Velocidade Lateral
-        Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
-        velocidadeLocal.x = 0;
-        _rigidbody.velocity = transform.TransformDirection(velocidadeLocal);
+            // Elimina Velocidade Lateral
+            Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
+            velocidadeLocal.x = 0;
+            _rigidbody.velocity = transform.TransformDirection(velocidadeLocal);
+        }
     }
 }
  
