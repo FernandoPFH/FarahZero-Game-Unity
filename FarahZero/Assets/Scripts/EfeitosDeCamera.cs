@@ -6,6 +6,8 @@ using UnityEngine;
 public class EfeitosDeCamera : MonoBehaviour
 {
     public static EfeitosDeCamera Instancia;
+    
+    private bool _efeitoDeVelocidadeEstaEmExecucao = false;
 
     void Awake()
     {
@@ -14,6 +16,11 @@ public class EfeitosDeCamera : MonoBehaviour
 
     async public void EfeitoDeVelocidade()
     {
+        if (_efeitoDeVelocidadeEstaEmExecucao)
+            return;
+        
+        _efeitoDeVelocidadeEstaEmExecucao = true;
+        
         float tempoDeReferencia = 0f;
 
         Vector3 posicaoInicial = transform.localPosition;
@@ -39,5 +46,7 @@ public class EfeitosDeCamera : MonoBehaviour
 
             tempoDeReferencia -= 0.01f;
         }
+
+        _efeitoDeVelocidadeEstaEmExecucao = false;
     }
 }
