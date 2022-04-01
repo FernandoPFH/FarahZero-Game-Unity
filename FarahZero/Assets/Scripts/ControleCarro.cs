@@ -26,6 +26,8 @@ public class ControleCarro : MonoBehaviour
     private Rigidbody _rigidbody;
     private Transform _visual;
     private Animator _animator;
+
+    private float? _tempoDoInicioDoDrift = null;
     
     private float _moverParaFrente;
     private float _girar;
@@ -55,6 +57,8 @@ public class ControleCarro : MonoBehaviour
             _shiftEstaSendoPrecionado = Input.GetKey(KeyCode.LeftShift);
 
             ControleDoVisual();
+
+            ControleDoDrift();
         }
     }
 
@@ -71,14 +75,55 @@ public class ControleCarro : MonoBehaviour
     void ControleDoVisual()
     {
         if (_shiftEstaSendoPrecionado)
+        {
             // Rotaciona O Visual Da Nave
-            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x,_girar * _valorDeRotacaoShiftDoVisual,_visual.localRotation.eulerAngles.z));
+            _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x, _girar * _valorDeRotacaoShiftDoVisual, _visual.localRotation.eulerAngles.z));
+        }
         else
         {
             _visual.localRotation = Quaternion.Euler(Vector3.zero);
             // Rotaciona O Visual Da Nave
             _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x, _visual.localRotation.eulerAngles.y, -_girar * _valorDeRotacaoDoVisual));
         }
+    }
+
+    void ControleDoDrift()
+    {
+        if (_tempoDoInicioDoDrift == null && _shiftEstaSendoPrecionado)
+            _tempoDoInicioDoDrift = Time.time;
+        
+        if (_tempoDoInicioDoDrift != null)
+        {
+            float tempoDeDrift = (float) (Time.time - _tempoDoInicioDoDrift!);
+
+            float[] trashHolds = {1, 3};
+
+            if (tempoDeDrift >= trashHolds[1])
+            {
+                // TODO Efeito Do Drift Nivel 2
+                
+                if (!_shiftEstaSendoPrecionado)
+                {
+                    EfeitosDeCamera.Instancia.EfeitoDeVelocidade();
+                    _rigidbody.AddForce(transform.forward * Constantes.BoostNivel2);
+
+                    _tempoDoInicioDoDrift = null;
+                }
+            }
+            else if (tempoDeDrift >= trashHolds[0])
+            {
+                // TODO Efeito Do Drift Nivel 1
+                
+                if (!_shiftEstaSendoPrecionado)
+                {
+                    EfeitosDeCamera.Instancia.EfeitoDeVelocidade();
+                    _rigidbody.AddForce(transform.forward * Constantes.BoostNivel1);
+
+                    _tempoDoInicioDoDrift = null;
+                }
+            }
+        }
+            
     }
 
     // Controla A Gravidade E Checa Se Está Próximo Do Chão
