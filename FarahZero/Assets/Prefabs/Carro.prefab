@@ -361,7 +361,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 937576358372228601}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 831.6, y: 1.56, z: 300.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -385,7 +385,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &937576358372228598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,8 +399,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Habilitado: 0
-  _forcaDeMovimento: 140
-  _forcadeDeRotacao: 15
+  _forcaDeMovimento: 400
+  _forcadeDeRotacao: 25
   _forcadeDeRotacaoShift: 30
   _valorDeRotacaoDoVisual: 10
   _valorDeRotacaoShiftDoVisual: 10

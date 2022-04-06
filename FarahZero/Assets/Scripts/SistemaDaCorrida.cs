@@ -57,7 +57,7 @@ public class SistemaDaCorrida : MonoBehaviour
         var posicaoInicialCorredores = CalcularPosicoesDosCorredores();
 
         // Instancia O Jogador
-        var jogador = Instantiate(NaveJogador, posicaoInicialCorredores[0], Quaternion.identity);
+        var jogador = Instantiate(NaveJogador, posicaoInicialCorredores[0], transform.rotation);
 
         // Passa As Informações Do UI
         jogador.GetComponent<CheckPointGerenciador>().Init(_contadorDeVolta,_contadorDeTempo);

@@ -167,12 +167,12 @@ public class ControleCarro : MonoBehaviour
         if (_shiftEstaSendoPrecionado)
         {
             // Rotaciona A Nave
-            _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacaoShift * (_moverParaFrente < 0f?-1f:1f));
+            _rigidbody.AddTorque(transform.up * _girar * _forcadeDeRotacaoShift * (_moverParaFrente < 0f?-1f:1f));
         }
         else
         {
             // Rotaciona A Nave
-            _rigidbody.AddTorque(Vector3.up * _girar * _forcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
+            _rigidbody.AddTorque(transform.up * _girar * _forcadeDeRotacao * (_moverParaFrente < 0f?-1f:1f));
         
             // Elimina Velocidade Lateral
             Vector3 velocidadeLocal = transform.InverseTransformDirection(_rigidbody.velocity);
@@ -181,7 +181,7 @@ public class ControleCarro : MonoBehaviour
         }
     }
 }
- 
+
 public static class BarycentricCoordinateInterpolator
 {
     public static Vector3 GetInterpolatedNormal(RaycastHit hit)
