@@ -6,11 +6,15 @@ using UnityEngine;
 public class EfeitosDeCamera : MonoBehaviour
 {
     public static EfeitosDeCamera Instancia;
+
+    private Camera _cameraCache;
     
     private bool _efeitoDeVelocidadeEstaEmExecucao = false;
 
     void Awake()
     {
+        _cameraCache = Camera.main;
+
         Instancia = this;
     }
 
@@ -23,13 +27,13 @@ public class EfeitosDeCamera : MonoBehaviour
         
         float tempoDeReferencia = 0f;
 
-        Vector3 posicaoInicial = transform.localPosition;
+        float fovInicial = _cameraCache.fieldOfView;
         
-        Vector3 posicaoDesejada = transform.localPosition - transform.forward;
+        float fovDesejado = fovInicial + 20;
 
         while (tempoDeReferencia <= 1)
         {
-            transform.localPosition = Vector3.Lerp(posicaoInicial, posicaoDesejada, tempoDeReferencia);
+            _cameraCache.fieldOfView = Mathf.Lerp(fovInicial, fovDesejado, tempoDeReferencia);
             
             await Task.Delay(10);
 
@@ -40,7 +44,7 @@ public class EfeitosDeCamera : MonoBehaviour
 
         while (tempoDeReferencia >= 0)
         {
-            transform.localPosition = Vector3.Lerp(posicaoInicial, posicaoDesejada, tempoDeReferencia);
+            _cameraCache.fieldOfView = Mathf.Lerp(fovInicial, fovDesejado, tempoDeReferencia);
             
             await Task.Delay(10);
 

@@ -8,7 +8,7 @@ public class Boost : MonoBehaviour
     {
         if (other.transform.parent.TryGetComponent<Rigidbody>(out Rigidbody rigidbody))
         {
-            EfeitosDeCamera.Instancia.EfeitoDeVelocidade();
+            //EfeitosDeCamera.Instancia.EfeitoDeVelocidade();
             rigidbody.AddForce(transform.forward * Constantes.BoostNivel1);
         }
     }

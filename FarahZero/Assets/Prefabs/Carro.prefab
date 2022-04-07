@@ -404,6 +404,8 @@ MonoBehaviour:
   _forcadeDeRotacaoShift: 30
   _valorDeRotacaoDoVisual: 10
   _valorDeRotacaoShiftDoVisual: 10
+  _valorDeIncrementoDeFOV: 15
+  _valorDeVelocidadeMaxima: 152
   _layerMaskChao:
     serializedVersion: 2
     m_Bits: 64

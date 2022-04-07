@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ControleCarro : MonoBehaviour
@@ -21,11 +22,19 @@ public class ControleCarro : MonoBehaviour
     private float _valorDeRotacaoShiftDoVisual;
 
     [SerializeField]
+    private float _valorDeIncrementoDeFOV;
+    [SerializeField]
+    private float _valorDeVelocidadeMaxima;
+
+    [SerializeField]
     private LayerMask _layerMaskChao;
     
     private Rigidbody _rigidbody;
     private Transform _visual;
     private Animator _animator;
+    private Camera _camera;
+
+    private float _fovIncial;
 
     private float? _tempoDoInicioDoDrift = null;
     
@@ -38,12 +47,15 @@ public class ControleCarro : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _visual = transform.Find("Visual");
         _animator = GetComponent<Animator>();
+        _camera = transform.Find("Camera").GetComponent<Camera>();
     }
     
     // Start is called before the first frame update
     void Start()
     {
         _animator.SetTrigger("Ligar");
+
+        _fovIncial = _camera.fieldOfView;
     }
 
     // Update is called once per frame
@@ -57,6 +69,8 @@ public class ControleCarro : MonoBehaviour
             _shiftEstaSendoPrecionado = Input.GetKey(KeyCode.LeftShift);
 
             ControleDoVisual();
+
+            ControleCamera();
 
             ControleDoDrift();
         }
@@ -85,6 +99,14 @@ public class ControleCarro : MonoBehaviour
             // Rotaciona O Visual Da Nave
             _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x, _visual.localRotation.eulerAngles.y, -_girar * _valorDeRotacaoDoVisual));
         }
+    }
+
+    void ControleCamera()
+    {
+        var fovAtual = Mathf.Lerp(_fovIncial, _fovIncial + _valorDeIncrementoDeFOV,
+            _rigidbody.velocity.magnitude / _valorDeVelocidadeMaxima);
+
+        _camera.fieldOfView = fovAtual;
     }
 
     void ControleDoDrift()
