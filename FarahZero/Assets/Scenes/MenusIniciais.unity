@@ -3442,7 +3442,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapas:
-  - PistaTeste
+  - Mapa1
 --- !u!1 &1925866175
 GameObject:
   m_ObjectHideFlags: 0
