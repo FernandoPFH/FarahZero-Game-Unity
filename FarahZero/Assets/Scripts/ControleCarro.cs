@@ -31,6 +31,8 @@ public class ControleCarro : MonoBehaviour
     
     private Rigidbody _rigidbody;
     private Transform _visual;
+    private ParticleSystem _fogoEsquerdo;
+    private ParticleSystem _fogoDireito;
     private Animator _animator;
     private Camera _camera;
 
@@ -46,6 +48,8 @@ public class ControleCarro : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody>();
         _visual = transform.Find("Visual");
+        _fogoEsquerdo = _visual.Find("Fogo_Esquerdo").GetComponent<ParticleSystem>();
+        _fogoDireito = _visual.Find("Fogo_Direito").GetComponent<ParticleSystem>();
         _animator = GetComponent<Animator>();
         _camera = transform.Find("Camera").GetComponent<Camera>();
     }
@@ -98,6 +102,17 @@ public class ControleCarro : MonoBehaviour
             _visual.localRotation = Quaternion.Euler(Vector3.zero);
             // Rotaciona O Visual Da Nave
             _visual.localRotation = Quaternion.Euler(new Vector3(_visual.localRotation.eulerAngles.x, _visual.localRotation.eulerAngles.y, -_girar * _valorDeRotacaoDoVisual));
+        }
+
+        if (_moverParaFrente > 0)
+        {
+            _fogoEsquerdo.Play(true);
+            _fogoDireito.Play(true);
+        }
+        else
+        {
+            _fogoEsquerdo.Stop(true);
+            _fogoDireito.Stop(true);
         }
     }
 
